@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Validation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #fff;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Validate Emails</h1>
+    <form action="/submit-emails" method="POST">
+        <label for="emails">Enter Emails (comma-separated):</label><br>
+        <textarea name="emails" id="emails" rows="6" cols="50"></textarea><br><br>
+        <button type="submit">Validate Emails</button>
+    </form>
+    
+
+    <% if (validEmails && validEmails.length > 0) { %>
+        <h2>Valid Emails:</h2>
+        <ul>
+            <% validEmails.forEach(function(email) { %>
+                <li><%= email %></li>
+            <% }) %>
+        </ul>
+        <p><a href="/uploads/valid_emails.csv" download>Download CSV</a></p>
+    <% } else if (validEmails) { %>
+        <p>No valid emails found.</p>
+    <% } %>
+</body>
+</html>
