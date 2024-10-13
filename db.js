@@ -5,7 +5,7 @@ const connectDatabase = () => {
         .connect(process.env.MONGO_URI, {
         })
         .then((data) => {
-            console.log(`Shopkart servers is connected with server: ${data.connection.host}`);
+            console.log(`servers is connected with server: ${data.connection.host}`);
         })
         .catch((error) => {
             console.error('Error connecting to database:', error.message);
