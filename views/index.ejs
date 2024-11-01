@@ -10,18 +10,26 @@
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center elements horizontally */
+            justify-content: center; /* Center elements vertically */
+            height: 100vh; /* Make body fill the viewport height */
         }
         h1 {
             color: #333;
+            margin-bottom: 20px;
         }
         form {
+            text-align: center;
             margin-bottom: 20px;
         }
         textarea {
-            width: 100%;
+            width: 50%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            margin-bottom: 10px; /* Added margin for better spacing */
         }
         button {
             padding: 10px 15px;
@@ -37,6 +45,14 @@
         ul {
             list-style-type: none;
             padding: 0;
+            margin: 0;
+            width: 50%;
+        }
+        h2 {
+            text-align: center;
+            width: 100%;
+            padding: 0;
+            margin-top: 20px; /* Added margin for spacing */
         }
         li {
             background-color: #fff;
@@ -45,17 +61,19 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+        p {
+            text-align: center; /* Center text for the no valid emails message */
+        }
     </style>
 </head>
 <body>
     <h1>Validate Emails</h1>
     <form action="/submit-emails" method="POST">
         <label for="emails">Enter Emails (comma-separated):</label><br>
-        <textarea name="emails" id="emails" rows="6" cols="50"></textarea><br><br>
+        <textarea name="emails" id="emails" rows="6" cols="50"></textarea><br>
         <button type="submit">Validate Emails</button>
     </form>
     
-
     <% if (validEmails && validEmails.length > 0) { %>
         <h2>Valid Emails:</h2>
         <ul>

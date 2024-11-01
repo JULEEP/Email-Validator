@@ -5,7 +5,7 @@ const connectDatabase = require('./db');
 const fs = require('fs');
 const fastCsv = require('fast-csv');
 const path = require('path');
-
+const dns = require('dns')
 dotenv.config();
 
 const app = express();
@@ -30,29 +30,47 @@ app.get('/', (req, res) => {
     res.render('index', { validEmails: null }); // Pass null initially
 });
 
-app.post('/submit-emails', (req, res) => {
-    // Check if emails are provided in the body
+// Serve the 'uploads' folder to access the CSV file
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Email validation logic with syntax and MX record check
+async function validateEmail(email) {
+    // Step 1: Syntax check using regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+        return false; // Invalid syntax
+    }
+
+    // Step 2: Check domain's MX records for email configuration
+    const domain = email.split('@')[1];
+    const domainValid = await new Promise((resolve) => {
+        dns.resolveMx(domain, (err, addresses) => {
+            resolve(!err && addresses.length > 0);
+        });
+    });
+    return domainValid; // True if domain is valid; false otherwise
+}
+
+// Express route for handling email submissions
+app.post('/submit-emails', async (req, res) => {
     if (!req.body.emails) {
         return res.status(400).send('No emails provided.');
     }
 
-    // Debugging log for received emails
     console.log('Emails received:', req.body.emails);
 
     // Split emails by spaces, commas, or new lines
     const emails = req.body.emails.split(/[\s,]+/).map(email => email.trim());
-
-    // Debug to check how the emails are processed
     console.log('Processed Emails:', emails);
 
     const validEmailsSet = new Set();
 
     // Validate each email and add to the set if valid
-    emails.forEach((email) => {
-        if (isValidEmail(email)) {
+    for (let email of emails) {
+        if (await validateEmail(email)) {
             validEmailsSet.add(email);
         }
-    });
+    }
 
     const validEmailsArray = Array.from(validEmailsSet);
 
@@ -76,10 +94,9 @@ app.post('/submit-emails', (req, res) => {
     }
 });
 
-
 connectDatabase(); // Call your database connection function
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port http://localhost:${PORT}`);
 });
